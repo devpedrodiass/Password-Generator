@@ -82,26 +82,28 @@ function App() {
       includeUppercase
     )
     setGeneratedPassword(newPassword)
-    setGeneratedPasswords((prev) => [
-      ...prev,
-      {
-        password: newPassword,
-        createdAt: new Intl.DateTimeFormat("en-US", {
-          year: "numeric",
-          month: "numeric",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          second: "numeric",
-          hour12: false,
-          timeZone: "America/Los_Angeles",
-        }).format(new Date()),
-      },
-    ])
-    localStorage.setItem(
-      "generatedPasswords@v1",
-      JSON.stringify(generatedPasswords)
-    )
+    if (newPassword !== "No options selected") {
+      setGeneratedPasswords((prev) => [
+        ...prev,
+        {
+          password: newPassword,
+          createdAt: new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: false,
+            timeZone: "America/Los_Angeles",
+          }).format(new Date()),
+        },
+      ])
+      localStorage.setItem(
+        "generatedPasswords@v1",
+        JSON.stringify(generatedPasswords)
+      )
+    }
   }
 
   return (
@@ -155,7 +157,8 @@ function App() {
                   type="text"
                   id="password"
                 />
-                {generatedPassword ? (
+                {generatedPassword &&
+                generatedPassword !== "No options selected" ? (
                   <motion.button
                     animate={{
                       scale: [0.8, 1],
@@ -268,7 +271,7 @@ function App() {
                 }}
               />
             </div>
-
+            {/* Submit */}
             <button
               type="submit"
               className="text-center p-2 bg-blue-400 text-blue-800 font-bold rounded-md cursor-pointer hover:brightness-75 transition-all"
@@ -276,8 +279,10 @@ function App() {
               Generate Password
             </button>
           </form>
+
           {/* Divider */}
           <div className="w-full h-[1px] bg-blue-400 my-4" />
+
           {/* Generated Passwords */}
           <div className="flex items-center flex-col mt-5">
             <h1 className="text-gray400 text-md">Generated Passwords</h1>
@@ -291,31 +296,34 @@ function App() {
                     transition={{ duration: 0.5 }}
                     className="flex flex-col gap-2 mt-2"
                   >
-                    {generatedPasswords.map(({ createdAt, password }) => (
-                      <motion.div
-                        animate={{
-                          opacity: [0, 1],
-                          height: [0, 24],
-                        }}
-                        transition={{ duration: 0.5 }}
-                        className="flex gap-2 items-center justify-between h-auto"
-                      >
-                        <span className="text-blue-400 bg-blue800 p-1 rounded-md text-xs">
-                          {createdAt}
-                        </span>
-                        <span className="text-gray400 truncate text-xs max-w-[80px]">
-                          {password}
-                        </span>
-                        <button
-                          onClick={copyToClipboard}
-                          type="button"
-                          title="Copy to clipboard"
-                          className="text-blue-400 cursor-pointer hover:brightness-75 transition-all"
+                    {generatedPasswords.map(
+                      ({ createdAt, password }, index) => (
+                        <motion.div
+                          key={`${password}-${index}`}
+                          animate={{
+                            opacity: [0, 1],
+                            height: [0, 24],
+                          }}
+                          transition={{ duration: 0.5 }}
+                          className="flex gap-2 items-center justify-between h-auto"
                         >
-                          <Clipboard weight="bold" size={16} />
-                        </button>
-                      </motion.div>
-                    ))}
+                          <span className="text-blue-400 bg-blue800 p-1 rounded-md text-xs">
+                            {createdAt}
+                          </span>
+                          <span className="text-gray400 truncate text-xs max-w-[80px]">
+                            {password}
+                          </span>
+                          <button
+                            onClick={copyToClipboard}
+                            type="button"
+                            title="Copy to clipboard"
+                            className="text-blue-400 cursor-pointer hover:brightness-75 transition-all"
+                          >
+                            <Clipboard weight="bold" size={16} />
+                          </button>
+                        </motion.div>
+                      )
+                    )}
                   </motion.div>
                 ) : null}
                 <button
