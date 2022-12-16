@@ -176,10 +176,10 @@ function App() {
               </div>
             </div>
 
-            {/* Lenght */}
+            {/* Length */}
             <div className="w-full flex flex-row justify-between">
-              <label className="text-gray400" htmlFor="lenght">
-                Lenght (1-32)
+              <label className="text-gray400" htmlFor="length">
+                Length (1-32)
               </label>
               <input
                 placeholder="0"
